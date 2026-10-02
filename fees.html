@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fees & Limits - Velocity Team</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <span>Velocity Team</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="predict.html" class="nav-link-btn"><span>Predict Now</span></a>
+      </nav>
+      <div class="header-right">
+        <div class="portfolio-pill non-clickable" id="headerPortfolioPill" title="Account Balance">
+          <span class="portfolio-label">Balance</span>
+          <span class="portfolio-val" id="headerPortfolioBalance">$0.00</span>
+        </div>
+        <a href="withdraw.html" class="btn-header-withdraw" title="Withdraw Funds">
+          <span>Withdraw</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+  <script type="module">
+    import { getStoredUser } from "./js/auth.js";
+    const user = getStoredUser();
+    if (user && user.balance !== undefined) {
+      const el = document.getElementById('headerPortfolioBalance');
+      if (el) el.textContent = `$${Number(user.balance).toFixed(2)}`;
+    }
+  </script>
+  <main class="main-wrapper" style="text-align: center; padding: 5rem 1.5rem;">
+    <div class="dashboard-category">Protocol Specifications</div>
+    <h1 class="dashboard-heading">Fees & Platform Limits</h1>
+    <p class="dashboard-sub" style="max-width: 600px; margin: 0 auto 2rem;">
+      3% parimutuel pool fee on winning predictions. 0% deposit fee.
+    </p>
+    <a href="predict.html" class="btn-submit-auth" style="display: inline-block; width: auto; padding: 0.85rem 2rem; text-decoration: none;">Predict Now →</a>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-bottom" style="border: none;">
+        <div>© 2026 Velocity Team. All rights reserved.</div>
+        <div class="footer-social-links"><a href="https://t.me/velocityteam666" target="_blank" class="footer-tg-link">Telegram: @velocityteam666</a></div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

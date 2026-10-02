@@ -1,0 +1,9 @@
+{
+  "name": "velocity-team",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Velocity Team - 60-Second BTC Market Prediction & Rewards",
+  "scripts": {
+    "start": "python -m http.server 8080"
+  }
+}

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTC/USDC 60s Predict - Velocity Team</title>
+  <meta name="description" content="Predict BTC/USDC in 60 seconds with 1.80x payouts. Real-time chart and order history.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: #090a0f;">
+
+  <div class="predict-arena-wrapper">
+
+    <!-- Top Mini Navigation -->
+    <div class="predict-top-bar">
+      <a href="index.html" class="predict-back-btn" title="Back to Dashboard">
+        ‹
+      </a>
+      <div class="predict-top-title">
+        <span>🎮</span>
+        <span>BTC/USDC 60s Predict</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <a href="withdraw.html" class="btn-header-withdraw" style="padding: 0.32rem 0.8rem; font-size: 0.76rem;" title="Go to Withdrawal Section">
+          Withdraw
+        </a>
+        <button class="predict-help-btn" id="btnOpenRulesHelp" title="Game Rules">
+          ?
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. GAME BALANCE CARD (Matching Pic 1) -->
+    <div class="game-balance-card">
+      <div class="balance-card-header">
+        <div>
+          <div class="game-balance-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#10b981">
+              <path d="M21 7H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-3 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+            </svg>
+            <span>Game Balance</span>
+          </div>
+          <div class="game-balance-amount">
+            <span id="gameBalanceAmount">$0.00</span>
+            <span>USDC</span>
+          </div>
+        </div>
+
+        <div class="balance-card-actions">
+          <button class="btn-deposit-pill" id="btnDepositTrigger">
+            <span>↓ Deposit</span>
+          </button>
+          <button class="btn-transfer-pill" id="btnTransferProfitTrigger">
+            <span>⇄ Transfer Profit</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="balance-card-substats" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="substat-item">
+          <div class="substat-label">Locked Bonus</div>
+          <div class="substat-val val-gold" id="statLockedBonus">$0.00</div>
+        </div>
+        <div class="substat-item">
+          <div class="substat-label">Net Profit</div>
+          <div class="substat-val val-red" id="statNetProfit">$0.00</div>
+        </div>
+        <div class="substat-item">
+          <div class="substat-label">Transferable</div>
+          <div class="substat-val val-white" id="statTransferable">$0.00</div>
+        </div>
+        <div class="substat-item">
+          <div class="substat-label">Transferred</div>
+          <div class="substat-val" style="color: #38bdf8; font-weight: 700;" id="statTransferredToWithdrawal">$0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BTC/USDC PRICE & CHART CARD (Matching Pic 1) -->
+    <div class="btc-price-chart-card">
+      <div class="btc-chart-header">
+        <div class="btc-badge-label">
+          <div class="btc-badge-icon">₿</div>
+          <span>BTC/USDC</span>
+          <div class="btc-live-dot"></div>
+        </div>
+
+        <div class="btc-current-price-val">
+          <span id="btcCurrentPrice">$86,650.00</span>
+          <span id="btcPriceChange">+3.01%</span>
+        </div>
+      </div>
+
+      <div class="chart-canvas-box">
+        <canvas id="priceCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- 3. ACTIVE TRADE INDICATOR CARD (Matching Pic 1) -->
+    <div class="active-trade-card" id="activeTradeCard">
+      <div class="active-trade-top">
+        <div>
+          <div>
+            <span class="trade-type-pill up" id="tradeTypePill">UP (CALL)</span>
+            <span class="trade-stake-text" id="tradeStakeText">$9.00 USDC</span>
+          </div>
+          <div class="trade-strike-text" id="tradeStrikeText">Strike: $86646.69</div>
+        </div>
+
+        <div class="trade-timer-ring" id="tradeTimerRing">
+          60s
+        </div>
+      </div>
+
+      <div class="trade-indicator-bar" id="tradeLiveIndicator">
+        Indicator: ↗ Winning: +$16.20 Expected
+      </div>
+    </div>
+
+    <!-- 4. BET CONTROLS & AMOUNT (Matching Pic 1) -->
+    <div class="bet-controls-card">
+      <div class="bet-amount-header">
+        <span>Bet Amount</span>
+        <span>Min: $0.10</span>
+      </div>
+
+      <div class="bet-input-wrapper">
+        <input type="number" id="stakeAmountInput" class="bet-input-field" value="9.00" step="0.50" min="0.10">
+        <span class="bet-currency-suffix">USDC</span>
+      </div>
+
+      <div class="bet-presets-row">
+        <button class="btn-quick-chip" data-val="0.10">$0.10</button>
+        <button class="btn-quick-chip" data-val="1">$1</button>
+        <button class="btn-quick-chip" data-val="5">$5</button>
+        <button class="btn-quick-chip" data-val="10">$10</button>
+        <button class="btn-quick-chip" data-val="25">$25</button>
+        <button class="btn-quick-chip chip-max" data-val="max">Max</button>
+      </div>
+
+      <!-- Large Dual Buttons (Pic 1) -->
+      <div class="dual-action-grid">
+        <button class="btn-trade-action up-call" id="btnPredictUpCall">
+          <div class="trade-action-title">
+            <span>↑</span>
+            <span>UP / CALL</span>
+          </div>
+          <div class="trade-action-payout">Payout 1.80x</div>
+        </button>
+
+        <button class="btn-trade-action down-put" id="btnPredictDownPut">
+          <div class="trade-action-title">
+            <span>↓</span>
+            <span>DOWN / PUT</span>
+          </div>
+          <div class="trade-action-payout">Payout 1.80x</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. MY PREDICTION HISTORY TABLE (Matching Pic 2) -->
+    <div class="history-card">
+      <div class="history-card-header">
+        <div class="history-card-title">
+          <span style="color: var(--bull-green);">🔄</span>
+          <span>My Prediction History</span>
+        </div>
+        <button class="history-refresh-btn" id="refreshHistoryBtn" title="Refresh History">
+          ↻
+        </button>
+      </div>
+
+      <div class="history-table-container">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>TYPE</th>
+              <th>AMOUNT</th>
+              <th>ENTRY</th>
+              <th>EXIT</th>
+              <th>RESULT</th>
+            </tr>
+          </thead>
+          <tbody id="predictionHistoryTbody">
+            <!-- Populated dynamically from real user trades -->
+          </tbody>
+        </table>
+
+        <!-- Empty state when user has 0 trades -->
+        <div id="historyEmptyState" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-size: 0.88rem;">
+          No prediction history yet. Place your first 60s trade above!
+        </div>
+      </div>
+    </div>
+
+    <!-- Predict Arena Footer -->
+    <div style="text-align: center; padding: 1.5rem 0 2rem; font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 0.5rem;">
+      <div>© 2026 Velocity Team</div>
+      <a href="https://t.me/velocityteam666" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan); font-weight: 600;">
+        Telegram: @velocityteam666
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ================= WIN CELEBRATION MODAL (Matching Pic 3) ================= -->
+  <div class="win-modal-overlay" id="winModal">
+    <div class="win-modal-card">
+      <div class="win-trophy-circle">
+        🏆
+      </div>
+      <h2 class="win-modal-title">YOU WON! 🎉</h2>
+      <p class="win-modal-sub">Your 60s prediction was accurate!</p>
+
+      <div class="win-details-box">
+        <div class="win-detail-row">
+          <span>Entry Strike Price:</span>
+          <span id="winEntryStrike">$86447.00</span>
+        </div>
+        <div class="win-detail-row">
+          <span>Exit Settle Price:</span>
+          <span id="winExitSettle">$86458.10</span>
+        </div>
+        <div class="win-detail-row" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem;">
+          <span style="color: #ffffff; font-weight: 700;">Profit / Payout:</span>
+          <span id="winProfitPayout" style="color: var(--bull-green); font-size: 1.05rem;">+$16.20 USDC</span>
+        </div>
+      </div>
+
+      <button class="btn-continue-playing" id="btnContinuePlaying">
+        Continue Playing
+      </button>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal-overlay" id="depositModal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="closeDepositModal">&times;</button>
+      <div class="modal-badge">
+        <span>💰</span> Deposit USDC
+      </div>
+      <h2 class="modal-title">Deposit Funds</h2>
+      <p class="modal-desc">Send USDC (Arbitrum / Base / BSC) to your personal game deposit address:</p>
+
+      <div style="background: rgba(10,12,16,0.8); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: #ffffff; word-break: break-all; margin-bottom: 1.25rem;">
+        0x71C945037d2fE4B94406697d81a93C7991D4e9F1
+      </div>
+
+      <button class="btn-submit-auth" id="btnCopyDepositAddr">Copy Address</button>
+    </div>
+  </div>
+
+  <!-- Transfer Profit Modal -->
+  <div class="modal-overlay" id="transferProfitModal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="closeTransferModal">&times;</button>
+      <div class="modal-badge">
+        <span>⇄</span> Portfolio Transfer
+      </div>
+      <h2 class="modal-title">Transfer to Withdrawal</h2>
+      <p class="modal-desc">
+        Move your game profit into your withdrawable portfolio. (Transfers to external wallets unlock after 2 Oct, 10 PM IST).
+      </p>
+
+      <div style="background: rgba(10,12,16,0.8); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 1.1rem; margin-bottom: 1.25rem; text-align: left;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+          <span>Game Balance:</span>
+          <strong id="modalTransferMaxBal" style="color: #ffffff;">$0.00</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
+          <span>Transferable:</span>
+          <strong id="modalTransferableProfit" style="color: var(--bull-green);">$0.00</strong>
+        </div>
+      </div>
+
+      <div class="form-group" style="text-align: left; margin-bottom: 1.25rem;">
+        <label for="transferAmountInput" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Amount to Transfer (USDC)</label>
+        <div style="position: relative; display: flex; align-items: center; margin-top: 0.35rem;">
+          <input type="number" id="transferAmountInput" class="form-input" style="padding-right: 70px;" placeholder="10.00" min="0.10" step="0.50">
+          <button id="btnTransferMax" style="position: absolute; right: 10px; background: rgba(16,185,129,0.2); color: var(--bull-green); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">MAX</button>
+        </div>
+      </div>
+
+      <button class="btn-submit-auth" id="btnConfirmTransferProfit">
+        Confirm Transfer to Withdrawal
+      </button>
+
+      <div style="margin-top: 1rem;">
+        <a href="withdraw.html" style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600;">
+          Open Withdrawal Section →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { PredictionEngine } from "./js/predict.js";
+    import { showToast } from "./js/card.js";
+    import { getStoredUser, saveUserSession } from "./js/auth.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const engine = new PredictionEngine();
+      engine.init();
+
+      // Deposit Modal handlers
+      const btnDeposit = document.getElementById('btnDepositTrigger');
+      const depositModal = document.getElementById('depositModal');
+      const closeDeposit = document.getElementById('closeDepositModal');
+
+      if (btnDeposit && depositModal) {
+        btnDeposit.addEventListener('click', () => depositModal.classList.add('active'));
+      }
+      if (closeDeposit && depositModal) {
+        closeDeposit.addEventListener('click', () => depositModal.classList.remove('active'));
+      }
+
+      const copyAddrBtn = document.getElementById('btnCopyDepositAddr');
+      if (copyAddrBtn) {
+        copyAddrBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText('0x71C945037d2fE4B94406697d81a93C7991D4e9F1');
+          showToast("Deposit address copied to clipboard!");
+          depositModal.classList.remove('active');
+        });
+      }
+
+      // Transfer Profit Modal Handlers
+      const btnTransferTrigger = document.getElementById('btnTransferProfitTrigger');
+      const transferModal = document.getElementById('transferProfitModal');
+      const closeTransfer = document.getElementById('closeTransferModal');
+      const transferInput = document.getElementById('transferAmountInput');
+      const maxTransferBtn = document.getElementById('btnTransferMax');
+      const confirmTransferBtn = document.getElementById('btnConfirmTransferProfit');
+
+      if (btnTransferTrigger && transferModal) {
+        btnTransferTrigger.addEventListener('click', () => {
+          const user = getStoredUser();
+          const maxAvail = user ? Math.max(Number(user.transferable || 0), Number(user.balance || 0)) : 0;
+
+          document.getElementById('modalTransferMaxBal').textContent = `$${Number(user ? user.balance : 0).toFixed(2)}`;
+          document.getElementById('modalTransferableProfit').textContent = `$${Number(user ? user.transferable : 0).toFixed(2)}`;
+          transferInput.value = maxAvail > 0 ? maxAvail.toFixed(2) : '10.00';
+          transferModal.classList.add('active');
+        });
+      }
+
+      if (closeTransfer && transferModal) {
+        closeTransfer.addEventListener('click', () => transferModal.classList.remove('active'));
+      }
+
+      if (maxTransferBtn) {
+        maxTransferBtn.addEventListener('click', () => {
+          const user = getStoredUser();
+          const maxAvail = user ? Math.max(Number(user.transferable || 0), Number(user.balance || 0)) : 0;
+          transferInput.value = maxAvail.toFixed(2);
+        });
+      }
+
+      if (confirmTransferBtn) {
+        confirmTransferBtn.addEventListener('click', async () => {
+          const transferAmt = parseFloat(transferInput.value);
+          if (isNaN(transferAmt) || transferAmt <= 0) {
+            showToast("Please enter a valid transfer amount.");
+            return;
+          }
+
+          let user = getStoredUser();
+
+          if (!user || Number(user.balance || 0) < transferAmt) {
+            showToast("Transfer amount exceeds available game balance.");
+            return;
+          }
+
+          user.balance = parseFloat((Number(user.balance) - transferAmt).toFixed(2));
+          user.transferredToWithdrawal = parseFloat((Number(user.transferredToWithdrawal || 0) + transferAmt).toFixed(2));
+          await saveUserSession(user);
+
+          transferModal.classList.remove('active');
+          engine.syncUserStats();
+          showToast(`Successfully transferred $${transferAmt.toFixed(2)} USDC to withdrawal section!`);
+        });
+      }
+
+      // Rules Modal trigger
+      document.getElementById('btnOpenRulesHelp').addEventListener('click', () => {
+        showToast("Rules: Predict if BTC price will be higher (UP) or lower (DOWN) after 60s. Payout: 1.80x.");
+      });
+    });
+  </script>
+</body>
+</html>
